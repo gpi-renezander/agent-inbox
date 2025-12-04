@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const AZURE_FUNCTION_URL = process.env.AZURE_FUNCTION_URL;
-const AZURE_FUNCTION_KEY = process.env.AZURE_FUNCTION_KEY;
+const AGENT_FUNCTION_URL = process.env.AGENT_FUNCTION_URL;
+const AGENT_FUNCTION_KEY = process.env.AGENT_FUNCTION_KEY;
 
 export async function POST(request: NextRequest) {
   try {
-    if (!AZURE_FUNCTION_URL || !AZURE_FUNCTION_KEY) {
+    if (!AGENT_FUNCTION_URL || !AGENT_FUNCTION_KEY) {
       return NextResponse.json(
-        { error: 'Missing Azure Function configuration' },
+        { error: 'Missing agent function configuration' },
         { status: 500 }
       );
     }
@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const endpoint = request.nextUrl.searchParams.get('endpoint') || 'agent';
 
-    const url = new URL(`${AZURE_FUNCTION_URL}/api/${endpoint}`);
-    url.searchParams.append('code', AZURE_FUNCTION_KEY);
+    const url = new URL(`${AGENT_FUNCTION_URL}/api/${endpoint}`);
+    url.searchParams.append('code', AGENT_FUNCTION_KEY);
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -39,16 +39,16 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    if (!AZURE_FUNCTION_URL || !AZURE_FUNCTION_KEY) {
+    if (!AGENT_FUNCTION_URL || !AGENT_FUNCTION_KEY) {
       return NextResponse.json(
-        { error: 'Missing Azure Function configuration' },
+        { error: 'Missing agent function configuration' },
         { status: 500 }
       );
     }
 
     const endpoint = request.nextUrl.searchParams.get('endpoint') || 'health';
-    const url = new URL(`${AZURE_FUNCTION_URL}/api/${endpoint}`);
-    url.searchParams.append('code', AZURE_FUNCTION_KEY);
+    const url = new URL(`${AGENT_FUNCTION_URL}/api/${endpoint}`);
+    url.searchParams.append('code', AGENT_FUNCTION_KEY);
 
     const response = await fetch(url.toString());
     const data = await response.json();
